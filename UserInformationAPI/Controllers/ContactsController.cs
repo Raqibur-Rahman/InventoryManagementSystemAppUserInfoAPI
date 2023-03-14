@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InventoryManagementSystemAppUserInfoAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserInformationAPI.Data;
 using UserInformationAPI.Models;
@@ -47,6 +48,28 @@ namespace UserInformationAPI.Controllers
             return Ok(contact);
 
 
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateContact([FromRoute] Guid id, UpdateContactRequest updateContactRequest)
+        {
+           var contact = dbContext.Contacts.Find(id);
+            if (contact != null)
+            {
+                contact.UserName = updateContactRequest.UserName;
+                contact.Password=updateContactRequest.Password;
+                contact.FirstName=updateContactRequest.FirstName;
+                contact.LastName=updateContactRequest.LastName;
+                contact.FullName = updateContactRequest.FullName;
+                contact.Email=updateContactRequest.Email;
+                contact.Phone = updateContactRequest.Phone;
+                contact.Address = updateContactRequest.Address;
+
+                await dbContext.SaveChangesAsync();
+                return Ok(contact);
+            }
+            return NotFound();
         }
     }
 }
